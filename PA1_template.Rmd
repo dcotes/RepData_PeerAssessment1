@@ -1,20 +1,141 @@
 # Reproducible Research: Peer Assessment 1
+# Dakota Carter
 
 
 ## Loading and preprocessing the data
+```{r}
+library(data.table)
+library(plyr)
+library(lubridate)
+download.file("http://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip", "~/Desktop/activity.zip")
+unzip("activity.zip")
+acdata <- data.table(read.csv("activity.csv"))
+acdata$date <- as.Date(acdata$date)
+acdata$interval <- as.factor(acdata$interval)
 
+```
 
 
 ## What is mean total number of steps taken per day?
+```{r}
+sumbydate <- tapply(acdata$steps, acdata$date, sum)
+sumby <- as.vector(sumbydate)
+mean(sumby, na.rm = T)
+median(sumby, na.rm = T)
+
+```
+The mean is 10766.19 steps per day
+The median is 10765 steps per day
+
+Here is the Histogram
+
+```{r fig.width=7, fig.height=7}
+hist(sumby, main = "Steps Per Day", xlab = "Steps", col = "dark green")
+
+```
 
 
+## What is the highest average daily activity pattern?
+```{r}
+cleanacdata <- na.omit(acdata)
+avgsteps <- tapply(cleanacdata$steps, cleanacdata$interval, mean)
+which.max(avgsteps)
+avgsteps[[104]]
+```
 
-## What is the average daily activity pattern?
+8:35-8:40am Has the highest average, with 206.1698 steps
+
+Here is the Plot
+```{r fig.width=7, fig.height=7}
+plot(unique(cleanacdata$interval), avgsteps, 
+        type = "l", xlab = "5 Minute Intervals", ylab = "Average Number of Steps")
+```
 
 
 
 ## Imputing missing values
+To replace the values the following code will replace any missing value with the mean value of that 5
+minute interval across all the days with data for that interval. 
+```{r}
+missing <- sum(is.na(acdata))
+missing
+```
+There are 2304 rows with missing values
+Below I replace the missing values with the average value for that time interval.
 
+```{r}
+imputemean <- function(x) replace(x, is.na(x), mean(x, na.rm = T))
+
+newacdata <- ddply(acdata, ~ interval, transform, steps = imputemean(steps))
+
+newsumbydate <- tapply(newacdata$steps, newacdata$date, sum)
+
+newsumby <- as.vector(newsumbydate)
+
+```
+
+Here is the Histogram with the replaced values
+```{r fig.width=7, fig.height=7}
+hist(newsumby, main = "Steps Per Day", xlab = "Steps", col = "dark blue")
+
+```
+
+```{r}
+mean(newsumby)
+
+median(newsumby)
+```
+The mean of the filled in data is 10766.19
+The median number of steps per day is also 10766.19
+
+There is virtually no impact on either the mean or median by replacing the values. Of course
+the frequency goes up for each number of steps so bars in the histogram grow taller, but there
+is no change in the shape of the data. 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r}
+days <- weekdays(newacdata$date)
+days <- as.factor(days)
+newacdata <- cbind(newacdata, days)
+library(dplyr)
+weekends <- filter(newacdata, days == c("Saturday", "Sunday"))
+weekdays <- filter(newacdata, days == c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))
+weekends <- arrange(weekends, date)
+weekdays <- arrange(weekdays, date)
+
+sumbyweekdays <- tapply(weekdays$steps, weekdays$date, sum)
+sumbyweekends <- tapply(weekends$steps, weekends$date, sum)
+
+sumbyweekdays <- as.vector(sumbyweekdays)
+sumbyweekends <- as.vector(sumbyweekends)
+
+mean(sumbyweekdays)
+median(sumbyweekdays)
+``` 
+The Mean of weekday steps is 2093
+The median is 2076
+
+```{r}
+mean(sumbyweekends)
+median(sumbyweekends)
+```
+The mean of weekend steps is 6032
+The median is 5615
+
+On average quite a few more steps are taken on the weekends. 
+
+```{r}
+weekendavg <- tapply(weekends$steps, weekends$interval, mean)
+weekdayavg <- tapply(weekdays$steps, weekdays$interval, mean)
+
+par(mfrow = c(1, 2))
+plot(unique(weekdays$interval), weekdayavg,
+     type = "l", xlab = "5 Minute Intervals", ylab = "Weekday Average Number of Steps")
+plot(unique(weekends$interval), weekendavg, 
+        type = "l", xlab = "5 Minute Intervals", ylab = "Weekend Average Number of Steps")
+```
+
+
+The average weekend steps seem higher, especially late morning to evening. 
