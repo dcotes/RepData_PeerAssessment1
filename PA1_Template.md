@@ -143,5 +143,3 @@ ggplot(avgsteps, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) +
 ![plot of chunk unnamed-chunk-11](figures/unnamed-chunk-11-1.png) 
 
 The average weekend steps seem higher, especially late morning to evening. 
-
-knit2hmtl()
