@@ -6,6 +6,7 @@
 ```{r, echo=TRUE}
 library(plyr)
 library(ggplot2)
+library(knitr)
 acdata <- read.csv("activity.csv")
 ```
 
@@ -20,7 +21,7 @@ median(sumbydate, na.rm = T)
 
 Here is the Histogram
 
-```{r, echo=TRUE, fig.width=7, fig.height=7, fig.path='figure_1.png'}
+```{r, echo=TRUE, fig.width=7, fig.height=7, fig.path='figures/'}
 qplot(sumbydate, binwidth = 1000, xlab = "total number of steps taken each day")
 ```
 
@@ -33,7 +34,7 @@ avgsteps[which.max(avgsteps$steps), ]
 ```
 
 Here is the Plot
-```{r, echo=TRUE, fig.width=7, fig.height=7, fig.path='figure_2.png'}
+```{r, echo=TRUE, fig.width=7, fig.height=7, fig.path='figures/'}
 ggplot(data = avgsteps, aes(x = interval, y = steps)) + geom_line() + xlab("5-minute interval") + 
     ylab("average number of steps taken")
 ```
@@ -58,7 +59,7 @@ newsumby <- as.vector(newsumbydate)
 ```
 
 Here is the Histogram with the replaced values
-```{r, echo=TRUE, fig.width=7, fig.height=7, fig.path='figure_3.png'}
+```{r, echo=TRUE, fig.width=7, fig.height=7, fig.path='figures/'}
 qplot(newsumbydate, binwidth = 1000, xlab = "total number of steps taken each day")
 ```
 
@@ -89,9 +90,11 @@ avgsteps <- aggregate(steps ~ interval + day, data = newacdata, mean)
 ```
 
 Here is the Panel Plot
-```{r, echo=TRUE, fig.width=7, fig.height=7, fig.path='figure_4.png'}
+```{r, echo=TRUE, fig.width=7, fig.height=7, fig.path='figures/'}
 ggplot(avgsteps, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) + 
     xlab("5-minute interval") + ylab("Number of steps")
 ```
 
 The average weekend steps seem higher, especially late morning to evening. 
+
+knit2hmtl()

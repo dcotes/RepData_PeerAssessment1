@@ -7,6 +7,7 @@
 ```r
 library(plyr)
 library(ggplot2)
+library(knitr)
 acdata <- read.csv("activity.csv")
 ```
 
@@ -37,7 +38,7 @@ Here is the Histogram
 qplot(sumbydate, binwidth = 1000, xlab = "total number of steps taken each day")
 ```
 
-![plot of chunk unnamed-chunk-3](figure_1.pngunnamed-chunk-3-1.png) 
+![plot of chunk unnamed-chunk-3](figures/unnamed-chunk-3-1.png) 
 
 
 ## What is the highest average daily activity pattern?
@@ -60,7 +61,7 @@ ggplot(data = avgsteps, aes(x = interval, y = steps)) + geom_line() + xlab("5-mi
     ylab("average number of steps taken")
 ```
 
-![plot of chunk unnamed-chunk-5](figure_2.pngunnamed-chunk-5-1.png) 
+![plot of chunk unnamed-chunk-5](figures/unnamed-chunk-5-1.png) 
 
 
 
@@ -93,7 +94,7 @@ Here is the Histogram with the replaced values
 qplot(newsumbydate, binwidth = 1000, xlab = "total number of steps taken each day")
 ```
 
-![plot of chunk unnamed-chunk-8](figure_3.pngunnamed-chunk-8-1.png) 
+![plot of chunk unnamed-chunk-8](figures/unnamed-chunk-8-1.png) 
 
 
 ```r
@@ -141,6 +142,8 @@ ggplot(avgsteps, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) +
     xlab("5-minute interval") + ylab("Number of steps")
 ```
 
-![plot of chunk unnamed-chunk-11](figure_4.pngunnamed-chunk-11-1.png) 
+![plot of chunk unnamed-chunk-11](figures/unnamed-chunk-11-1.png) 
 
 The average weekend steps seem higher, especially late morning to evening. 
+
+knit2hmtl()
