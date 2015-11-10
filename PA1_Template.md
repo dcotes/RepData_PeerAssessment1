@@ -113,9 +113,7 @@ median(newsumby)
 ## [1] 10766.19
 ```
 
-There is virtually no impact on either the mean or median by replacing the values. Of course
-the frequency goes up for each number of steps so bars in the histogram grow taller, but there
-is no change in the shape of the data. 
+Imputing missing values gets rid of the scew! Yay!
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
