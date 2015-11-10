@@ -34,6 +34,7 @@ avgsteps[which.max(avgsteps$steps), ]
 
 Here is the Plot
 ```{r fig.width=7, fig.height=7, fig.path='figures'}
+
 ggplot(data = avgsteps, aes(x = interval, y = steps)) + geom_line() + xlab("5-minute interval") + 
     ylab("average number of steps taken")
 ```
@@ -85,11 +86,12 @@ whichday <- function(date) {
 }
 newacdata$date <- as.Date(newacdata$date)
 newacdata$day <- sapply(newacdata$date, FUN = whichday)
+
 avgsteps <- aggregate(steps ~ interval + day, data = newacdata, mean)
 ```
 
 Here is the Panel Plot
-```{r fig.width=7, fig.height=7, fig.path='figures'}
+```{r fig.height=7, fig.width=7, fig.path='figures'}
 ggplot(avgsteps, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) + 
     xlab("5-minute interval") + ylab("Number of steps")
 ```
